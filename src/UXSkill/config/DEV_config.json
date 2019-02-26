@@ -1,0 +1,12 @@
+{
+  "box": {
+    "apiUrl": "https://api.box.com/2.0",
+    "sdkUrl": "http://boxsdk"
+  },
+  "aws":  {
+    "language": "en-US",
+    "transcription":  {
+      "maxSpeakerLabels": 2
+    }
+  }
+}
