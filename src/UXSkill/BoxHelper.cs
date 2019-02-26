@@ -26,13 +26,9 @@ namespace UXSkill {
         // fileId comes from boxBody.source.id.Value
         // writeToken comes from boxBody.token.write.access_token.Value
         public static async Task UpdateSkillCards(List<Dictionary<string, object>> cards, string writeToken, string fileId) {
-            //var boxConfig = new BoxConfig(string.Empty, string.Empty, new Uri(config.BoxApiUrl));
-            //var session = new OAuthSession(writeToken, string.Empty, 3600, "bearer");
-            //var client = new BoxClient(boxConfig, session);
             var boxConfig = new BoxConfig(string.Empty, string.Empty, new Uri(config.BoxSdkUrl));
             var session = new OAuthSession(writeToken, string.Empty, 3600, "bearer");
             var client = new BoxClient(boxConfig, session);
-            //var currentUser = await client.UsersManager.GetCurrentUserInformationAsync();
 
             if (client == null) {
                 throw new Exception("Unable to create box client");

@@ -6,6 +6,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Amazon.S3.Model;
+using Amazon.Lambda.APIGatewayEvents;
 using System.Net;
 using Amazon.S3;
 
@@ -16,7 +17,7 @@ namespace UXSkill {
     public class Function {
         private static Configuration config = Configuration.GetInstance.Result;
 
-        public async Task FunctionHandler(System.IO.Stream request, ILambdaContext context) {
+        public async Task<APIGatewayProxyResponse> FunctionHandler(System.IO.Stream request, ILambdaContext context) {
             Console.WriteLine("======== Skill Executing!! =========");
 
             string requestStr;
@@ -55,6 +56,14 @@ namespace UXSkill {
             //await BoxHelper.GenerateCards(result, inputJson);
             await GenerateCards(convo, inputJson.token.write.access_token.Value, fileId);
 
+            return GetResponse(HttpStatusCode.OK, "Success");
+        }
+
+        public static APIGatewayProxyResponse GetResponse (HttpStatusCode httpStatusCode, string message) {
+            return new APIGatewayProxyResponse {
+                StatusCode = (int) httpStatusCode,
+                Body = JsonConvert.SerializeObject(new { message = message }, Formatting.Indented)
+            };
         }
 
         public static async Task GenerateCards(Conversation convo, string writeToken, string fileId) {

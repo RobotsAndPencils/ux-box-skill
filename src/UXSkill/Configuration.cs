@@ -46,9 +46,9 @@ namespace UXSkill {
         // get the config file from s3 and initialize properties
         public async Task InitializeAsync() {
             string configKey = $"{Environment}_{S3ConfigKey}";
+
             try {
                 string env = await GetS3FileContent(S3BucketName, configKey);
-                Console.WriteLine($"environment: {env}");
                 dynamic envJson = JObject.Parse(env);
 
                 // Initialize json sourced properties
