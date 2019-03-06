@@ -46,7 +46,7 @@ namespace UXSkill {
             Console.WriteLine("======== Put Object Response =========");
             Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.None));
             if (response.HttpStatusCode.CompareTo(HttpStatusCode.OK) != 0) {
-                throw new Exception("Status code error");
+                return GetResponse(response.HttpStatusCode, "Error uploading file to S3");
             }
 
             Console.WriteLine("JobName: " + jobName);
