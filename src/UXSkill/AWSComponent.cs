@@ -13,7 +13,7 @@ using Amazon.S3.Model;
 using Amazon.S3;
 
 namespace UXSkill {
-    public class AWSHelper {
+    public class AWSComponent {
         public struct JobStatus {
             public const string IN_PROGRESS = "IN_PROGRESS";
             public const string COMPLETED = "COMPLETED";
@@ -22,7 +22,7 @@ namespace UXSkill {
         private static readonly Configuration config = Configuration.GetInstance.Result;
         private static Regex blankPattern = new Regex("^\\W*$");
 
-        public AWSHelper() {
+        public AWSComponent() {
         }
 
         private static async Task<TranscriptionJob> WaitForCompletion(string jobName) {

@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using Amazon.S3.Model;
 using Amazon.Lambda.APIGatewayEvents;
 using System.Net;
-using Amazon.S3;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -36,13 +35,13 @@ namespace UXSkill {
             var jobName = $"f{inputJson.source.id}";
 
             // move file to S3 for processing (aws can not process using anything other than an S3 uir)
-            var fileUrl = BoxHelper.getFileUrl(fileId, inputJson.token);
+            var fileUrl = BoxComponent.getFileUrl(fileId, inputJson.token);
             Console.WriteLine($"FileUrl: {fileUrl}");
             string fileExt = Path.GetExtension(inputJson.source.name.Value).TrimStart('.');
             string fileName = $"{jobName}.{fileExt}";
             string mimeType = MimeMapping.GetMimeType(fileExt);
 
-            PutObjectResponse response = await BoxHelper.UploadBoxFileToS3(fileUrl, config.S3BucketName, mimeType, fileName);
+            PutObjectResponse response = await BoxComponent.UploadBoxFileToS3(fileUrl, config.S3BucketName, mimeType, fileName);
             Console.WriteLine("======== Put Object Response =========");
             Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.None));
             if (response.HttpStatusCode.CompareTo(HttpStatusCode.OK) != 0) {
@@ -50,11 +49,12 @@ namespace UXSkill {
             }
 
             Console.WriteLine("JobName: " + jobName);
-            Conversation convo = await AWSHelper.TranscribeMedia(jobName, fileName, fileExt);
+            Conversation convo = await AWSComponent.TranscribeMedia(jobName, fileName, fileExt);
 
-            await AWSHelper.DeleteObjectNonVersionedBucketAsync(fileName);
+            await AWSComponent.DeleteObjectNonVersionedBucketAsync(fileName);
             //await BoxHelper.GenerateCards(result, inputJson);
             await GenerateCards(convo, inputJson.token.write.access_token.Value, fileId);
+            await ElasticAllenComponent.IndexMetadata(convo, fileUrl);
 
             return GetResponse(HttpStatusCode.OK, "Success");
         }
@@ -68,9 +68,9 @@ namespace UXSkill {
 
         public static async Task GenerateCards(Conversation convo, string writeToken, string fileId) {
             var cards = new List<Dictionary<string, object>>();
-            cards.AddRange(BoxHelper.GenerateTranscriptCard(convo, fileId));
-            cards.AddRange(BoxHelper.GenerateTopicsKeywordCard(convo, fileId));
-            await BoxHelper.UpdateSkillCards(cards, writeToken, fileId);
+            cards.AddRange(BoxComponent.GenerateTranscriptCard(convo, fileId));
+            cards.AddRange(BoxComponent.GenerateTopicsKeywordCard(convo, fileId));
+            await BoxComponent.UpdateSkillCards(cards, writeToken, fileId);
         }
     }
 }

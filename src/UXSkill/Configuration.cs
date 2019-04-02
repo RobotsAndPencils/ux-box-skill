@@ -19,6 +19,8 @@ namespace UXSkill {
         public AmazonComprehendClient AzComprehendClient { get; }
         public string BoxApiUrl { get; set; }
         public string BoxSdkUrl { get; set; }
+        public string ElasticAllenUrl { get; set; }
+        public bool ElasticAllenEnabled { get; set; }
         public int MaxSpeakerLabels { get; set; }
         public string Language { get; set; }
 
@@ -28,7 +30,6 @@ namespace UXSkill {
             this.S3BucketName = System.Environment.GetEnvironmentVariable("AWS_S3_BUCKET");
             this.S3ConfigKey = System.Environment.GetEnvironmentVariable("AWS_S3_CONFIGKEY");
             this.Environment = System.Environment.GetEnvironmentVariable("ENVIRONMENT");
-
             var regionEndpoint = RegionEndpoint.GetBySystemName(S3Region);
             this.S3Client = new AmazonS3Client(regionEndpoint);
             this.AzTranscribeClient = new AmazonTranscribeServiceClient(regionEndpoint);
@@ -56,6 +57,8 @@ namespace UXSkill {
                 this.MaxSpeakerLabels = (int)envJson.aws.transcription.maxSpeakerLabels.Value;
                 this.Language = envJson.aws.language.Value;
                 this.BoxSdkUrl = envJson.box.sdkUrl.Value;
+                this.ElasticAllenUrl = envJson.elasticAllen.apiUrl.Value;
+                this.ElasticAllenEnabled = envJson.elasticAllen.enabled.Value;
                 Console.WriteLine($"BoxApiUrl: {BoxApiUrl}");
             } catch (AmazonS3Exception e) {
                 Console.WriteLine($"Exception reading config file [{configKey}] from S3: {e}");

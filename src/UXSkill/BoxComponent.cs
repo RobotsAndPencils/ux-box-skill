@@ -16,7 +16,7 @@ using System.Net;
 using System.IO;
 
 namespace UXSkill {
-    public static class BoxHelper {
+    public static class BoxComponent {
         private enum SkillType { timeline, keyword, transcript };
         private static readonly Configuration config = Configuration.GetInstance.Result;
         private static Random random = new Random();
@@ -37,7 +37,7 @@ namespace UXSkill {
                 { "cards", cards }
             };
 
-            //TODO: first load then merge (so it's an update and not replacement off all that's there)
+            //TODO: first load then merge (so it's an update and not replacement of all that's there)
             try {
                 Console.WriteLine("--------------------- Cards --------------");
                 Console.WriteLine(JsonConvert.SerializeObject(skillsMetadata, Formatting.None));

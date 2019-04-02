@@ -15,7 +15,7 @@
   "function-runtime":"dotnetcore2.0",
   "function-memory-size" : 512,
   "function-timeout" : 300,
-  "function-name" : "UXSkill",
+  "function-name" : "uxSkill",
   "function-handler" : "UXSkill::UXSkill.Function::FunctionHandler",
   "environment-variables" : ""
 }

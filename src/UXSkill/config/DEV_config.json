@@ -8,5 +8,9 @@
     "transcription":  {
       "maxSpeakerLabels": 2
     }
+  },
+  "elasticAllen":  {
+    "enabled" :  true,
+    "apiUrl": "http://eabot.us-west-1.elasticbeanstalk.com/demoimport"
   }
 }
